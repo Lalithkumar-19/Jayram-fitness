@@ -53,7 +53,7 @@ const Contact = () => {
 
             <Section className="py-10">
                 <div className="container">
-                    <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+                    <div className="grid gap-8 lg:grid-cols-1 lg:gap-12">
                         {/* Contact Info */}
                         <div className="space-y-6">
                             <div>
@@ -144,7 +144,7 @@ const Contact = () => {
                         </div>
 
                         {/* Contact Form */}
-                        <div className="h-fit rounded-2xl border border-white/10 bg-greyLight p-6 md:p-8">
+                        {/* <div className="h-fit rounded-2xl border border-white/10 bg-greyLight p-6 md:p-8">
                             <h2 className="text-2xl font-semibold tracking-wide text-white font-gagalin">
                                 Send us a Message
                             </h2>
@@ -236,7 +236,7 @@ const Contact = () => {
                                     )}
                                 </button>
                             </form>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </Section>

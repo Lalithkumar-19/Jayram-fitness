@@ -32,7 +32,7 @@ export const AdminProvider = ({ children }) => {
     // Pagination Info
     const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
 
-    const API_URL = "http://localhost:5000/api";
+    const API_URL = "https://jayram-fitness-backend.vercel.app/api";
 
     // Attach token to requests
     const config = () => ({
