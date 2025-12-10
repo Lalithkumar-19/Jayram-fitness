@@ -167,7 +167,7 @@ export const tools = [tool1, tool2, tool3, tool4, tool3];
 export const testimonials = [
   {
     id: 1,
-    name: "Steven Haward",
+    name: "Venkat Garu",
     about: "Our Trainer",
     review:
       "I’ve been using JayRam Fitness for the past three months, and I’m genuinely impressed. The website is easy to navigate, and everything is laid out clearly. I purchased the Premium Plan, and the personalized coaching has been a game-changer for me. My coach is incredibly supportive and always available to answer my questions.",
@@ -175,7 +175,7 @@ export const testimonials = [
   },
   {
     id: 2,
-    name: "Josh Oliver",
+    name: "Shyam ",
     about: "Our Trainer",
     review:
       "JayRam Fitness has been a great help in my fitness journey. I opted for the group coaching plan, and it has been wonderful. The workout plans are detailed and adaptable. The trainers are encouraging and keep me motivated throughout my progress. I highly recommend JayRam Fitness to anyone who needs professional guidance.",
@@ -183,7 +183,7 @@ export const testimonials = [
   },
   {
     id: 3,
-    name: "Edward Hawley",
+    name: "Goutham",
     about: "Our Trainer",
     review:
       "Choosing JayRam Fitness was one of the best decisions for my health goals. The variety of workout plans keeps it exciting, and the nutritional tips are very practical. The trainers are approachable and skilled, always making sure I’m on track. I’ve noticed significant improvements, and I feel more confident now.",
@@ -194,25 +194,25 @@ export const testimonials = [
 export const trainers = [
   {
     id: 1,
-    name: "Sam Cole",
+    name: "Venkat Garu",
     role: "Pesonal Trainer",
     image: sam,
   },
   {
     id: 2,
-    name: "M. Harris",
+    name: "Shyam",
     role: "Pesonal Trainer",
     image: harris,
   },
   {
     id: 3,
-    name: "John Haley",
+    name: "Goutham",
     role: "Pesonal Trainer",
     image: john,
   },
   {
     id: 4,
-    name: "Tom Blake",
+    name: "Ganesh Bv",
     role: "Pesonal Trainer",
     image: tom,
   },
@@ -328,7 +328,7 @@ export const contactInfo = [
   },
   {
     icon: phone,
-    info: "+91 98765 43210",
+    info: "+91 7780367903",
   },
   {
     icon: email,

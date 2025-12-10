@@ -22,9 +22,7 @@ const Login = () => {
         setLoading(false);
 
         if (res.success) {
-            setTimeout(() => {
-                navigate('/admin');
-            }, 3000);
+            navigate('/admin');
         } else {
             alert(res.message);
         }

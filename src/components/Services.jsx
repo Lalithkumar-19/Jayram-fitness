@@ -12,7 +12,7 @@ const Services = () => {
     name: "Jayaram Fitness",
     tagline: "Transform Your Body, Transform Your Life",
     phone: "+91 98765 43210",
-    whatsapp: "919876543210",
+    whatsapp: "917780367903",
     email: "info@jayaramfitness.com",
     address: "Jaganadhagiri village, Dhraksharmam road, Kakinada, AP",
     hours: {

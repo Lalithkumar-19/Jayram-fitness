@@ -4,13 +4,13 @@ export default function Footer() {
   const GYM_INFO = {
     name: "JayRam Fitness",
     tagline: "Transform Your Body, Transform Your Life",
-    phone: "+91 98765 43210",
+    phone: "+91 7780367903",
     email: "contact@jayaramfitness.com",
-    whatsapp: "919876543210",
+    whatsapp: "917780367903",
     address: "Jaganadhagiri village, Dhraksharmam road, Kakinada, AP",
     hours: {
       weekdays: "5:00 AM - 10:00 PM",
-      weekends: "6:00 AM - 8:00 PM",
+      weekends: "5:00 PM - 9:00 PM",
     },
     social: {
       instagram: "https://instagram.com",
@@ -92,11 +92,11 @@ export default function Footer() {
             <h3 className="font-gagalin text-xl tracking-wide text-white">Hours</h3>
             <div className="space-y-2 text-sm text-gray-400">
               <p>
-                <span className="font-medium text-white">Mon - Fri:</span>{" "}
+                <span className="font-medium text-white">Morning :</span>{" "}
                 {GYM_INFO.hours.weekdays}
               </p>
               <p>
-                <span className="font-medium text-white">Sat - Sun:</span>{" "}
+                <span className="font-medium text-white">Evening :</span>{" "}
                 {GYM_INFO.hours.weekends}
               </p>
             </div>

@@ -6,9 +6,9 @@ const Contact = () => {
     const GYM_INFO = {
         name: "Jayaram Fitness",
         address: "Jaganadhagiri village, Dhraksharmam road, Kakinada, AP",
-        phone: "+91 98765 43210",
+        phone: "+91 7780367903",
         email: "contact@jayaramfitness.com",
-        whatsapp: "919876543210",
+        whatsapp: "917780367903",
     };
 
     const [loading, setLoading] = useState(false);

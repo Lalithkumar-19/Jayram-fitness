@@ -12,7 +12,7 @@ const AdmissionForm = ({ onClose, initialData }) => {
 
     // Form State
     const [formData, setFormData] = useState({
-        firstName: "", surname: "", dob: "", gender: "male", email: "", address: "", occupation: "", weight: "", height: "",
+        firstName: "", surname: "", dob: "", gender: "male", email: "", mobile: "", address: "", occupation: "", weight: "", height: "",
         disability: "no", disabilityDetail: "", healthProblems: [],
         joinDate: format(new Date(), 'yyyy-MM-dd'), duration: "1 month", endDate: "",
         totalAmount: "", paidAmount: "",
@@ -110,6 +110,7 @@ const AdmissionForm = ({ onClose, initialData }) => {
                             </div>
                         </div>
                         <Input label="Email" type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required className="md:col-span-1" />
+                        <Input label="Mobile Number" type="tel" value={formData.mobile} onChange={e => setFormData({ ...formData, mobile: e.target.value })} required placeholder="10-digit number" />
                         <Input label="Occupation" value={formData.occupation} onChange={e => setFormData({ ...formData, occupation: e.target.value })} />
                         <Input label="Address" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} className="md:col-span-3" />
                         <Input label="Weight (kg)" type="number" value={formData.weight} onChange={e => setFormData({ ...formData, weight: e.target.value })} />

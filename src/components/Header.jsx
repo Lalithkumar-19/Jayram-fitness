@@ -4,7 +4,7 @@ import { Menu, X, Dumbbell, MessageCircle } from "lucide-react";
 // Local Constants and Utilities
 const GYM_INFO = {
   name: "JayRam Fitness",
-  whatsapp: "919876543210", // Updated to provided number format
+  whatsapp: "917780367903", // Updated to provided number format
 };
 
 const NAV_LINKS = [

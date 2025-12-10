@@ -84,7 +84,7 @@ const Plans = () => {
               <button
                 onClick={() => {
                   const message = `Hi, I'm interested in the ${plan.package} plan priced at ${plan.price} INR.`;
-                  window.open(`https://wa.me/919876543210?text=${encodeURIComponent(message)}`, "_blank");
+                  window.open(`https://wa.me/917780367903?text=${encodeURIComponent(message)}`, "_blank");
                 }}
                 className={`w-full rounded-[20px] py-4 text-lg font-medium ${plan.id === 2
                   ? "bg-primary hover:bg-primaryVar1 focus:bg-primaryVar2"

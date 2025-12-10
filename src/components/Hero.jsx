@@ -46,7 +46,7 @@ const Button = ({
 };
 
 const Hero = () => {
-  const whatsappLink = "https://wa.me/919876543210"; // Placeholder, replace with actual number if available
+  const whatsappLink = "https://wa.me/917780367903"; // Placeholder, replace with actual number if available
 
   return (
     <section className="relative min-h-[90vh] overflow-hidden flex items-center font-vazirmatn">
@@ -100,7 +100,7 @@ const Hero = () => {
               size="xl"
               className="group text-lg h-14 px-8 rounded-full border-white/20 bg-white/5 text-white backdrop-blur-sm hover:bg-white/10 hover:border-white/40 transition-all hover:scale-105"
             >
-              <a href="#services">
+              <a href="#programs">
                 Explore Plans
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </a>
