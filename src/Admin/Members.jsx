@@ -233,6 +233,7 @@ const Members = () => {
                             <DetailSection title="Physical Stats & Health">
                                 <DetailRow label="Weight" value={`${selectedMember.weight} kg`} />
                                 <DetailRow label="Height" value={`${selectedMember.height} cm`} />
+                                <DetailRow label="Mobile Number" value={selectedMember.mobile || "N/A"} className="col-span-2" />
                                 <DetailRow label="Disability" value={selectedMember.disability === 'yes' ? selectedMember.disabilityDetail : 'None'} className="col-span-2" />
                                 <div className="col-span-2">
                                     <span className="block text-xs text-gray-500 mb-1">Health Problems</span>
