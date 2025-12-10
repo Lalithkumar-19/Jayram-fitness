@@ -4,7 +4,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { TrendingUp, Users, Calendar, IndianRupee } from 'lucide-react';
 
 const Dashboard = () => {
-    const { revenueData, stats } = useAdmin();
+    const { revenueData, stats, fetchStats } = useAdmin();
+
+    React.useEffect(() => {
+        fetchStats();
+    }, []);
 
     const StatCard = ({ title, value, icon: Icon, color }) => (
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-all hover:bg-white/10">
@@ -33,25 +37,25 @@ const Dashboard = () => {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                     title="Total Revenue"
-                    value={`${stats.totalRevenue.toLocaleString()}`}
+                    value={`₹${stats?.totalRevenue?.toLocaleString() || '0'}`}
                     icon={IndianRupee}
                     color="from-green-500 to-emerald-600"
                 />
                 <StatCard
                     title="Monthly Revenue"
-                    value={`₹${stats.thisMonthRevenue.toLocaleString()}`}
+                    value={`₹${stats?.thisMonthRevenue?.toLocaleString() || '0'}`}
                     icon={TrendingUp}
                     color="from-blue-500 to-indigo-600"
                 />
                 <StatCard
                     title="Total Members"
-                    value={stats.totalMembers}
+                    value={stats?.totalMembers || 0}
                     icon={Users}
                     color="from-primary to-orange-600"
                 />
                 <StatCard
                     title="Active Members"
-                    value={stats.activeMembers}
+                    value={stats?.activeMembers || 0}
                     icon={Calendar}
                     color="from-purple-500 to-pink-600"
                 />
@@ -63,24 +67,28 @@ const Dashboard = () => {
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                     <h3 className="mb-6 font-gagalin text-xl">Revenue Analytics</h3>
                     <div className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={revenueData}>
-                                <defs>
-                                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#D90A14" stopOpacity={0.8} />
-                                        <stop offset="95%" stopColor="#D90A14" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                                <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#1D1D1D', borderColor: '#333', color: '#fff' }}
-                                    itemStyle={{ color: '#fff' }}
-                                />
-                                <Area type="monotone" dataKey="total" stroke="#D90A14" fillOpacity={1} fill="url(#colorTotal)" />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                        {stats?.revenueData?.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={stats.revenueData}>
+                                    <defs>
+                                        <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#D90A14" stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor="#D90A14" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                                    <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#1D1D1D', borderColor: '#333', color: '#fff' }}
+                                        itemStyle={{ color: '#fff' }}
+                                    />
+                                    <Area type="monotone" dataKey="total" stroke="#D90A14" fillOpacity={1} fill="url(#colorTotal)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex h-full items-center justify-center text-gray-500">No data available</div>
+                        )}
                     </div>
                 </div>
 
@@ -88,17 +96,21 @@ const Dashboard = () => {
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                     <h3 className="mb-6 font-gagalin text-xl">Monthly Growth</h3>
                     <div className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={revenueData.slice(-6)}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                                <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} tickLine={false} />
-                                <Tooltip
-                                    cursor={{ fill: 'transparent' }}
-                                    contentStyle={{ backgroundColor: '#1D1D1D', borderColor: '#333', color: '#fff' }}
-                                />
-                                <Bar dataKey="total" fill="#D90A14" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                        {stats?.revenueData?.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={stats.revenueData.slice(-6)}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                    <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} tickLine={false} />
+                                    <Tooltip
+                                        cursor={{ fill: 'transparent' }}
+                                        contentStyle={{ backgroundColor: '#1D1D1D', borderColor: '#333', color: '#fff' }}
+                                    />
+                                    <Bar dataKey="total" fill="#D90A14" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex h-full items-center justify-center text-gray-500">No data available</div>
+                        )}
                     </div>
                 </div>
             </div>

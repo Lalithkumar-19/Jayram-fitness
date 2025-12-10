@@ -22,7 +22,10 @@ const AdmissionForm = ({ onClose, initialData }) => {
     // Populate form if editing
     useEffect(() => {
         if (initialData) {
-            setFormData(initialData);
+            setFormData({
+                ...initialData,
+                dob: initialData.dob ? new Date(initialData.dob).toISOString().split('T')[0] : "",
+            });
         }
     }, [initialData]);
 
@@ -69,7 +72,7 @@ const AdmissionForm = ({ onClose, initialData }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (initialData) {
-            updateMember(initialData.id, formData);
+            updateMember(initialData._id || initialData.id, formData);
         } else {
             addMember(formData);
         }
@@ -79,7 +82,7 @@ const AdmissionForm = ({ onClose, initialData }) => {
     const remainingAmount = (Number(formData.totalAmount) || 0) - (Number(formData.paidAmount) || 0);
 
     return (
-        <div className="bg-[#1D1D1D] p-6 rounded-2xl max-h-[85vh] overflow-y-auto w-full max-w-4xl mx-auto border border-white/10 text-white font-vazirmatn scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
+        <div onClick={(e) => e.stopPropagation()} className="bg-[#1D1D1D] p-6 rounded-2xl max-h-[85vh] overflow-y-auto w-full max-w-4xl mx-auto border border-white/10 text-white font-vazirmatn scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
             <h2 className="text-2xl font-bold font-gagalin mb-6 text-center">{initialData ? "Edit Member Details" : "New Member Admission"}</h2>
 
             <form onSubmit={handleSubmit} className="space-y-8">

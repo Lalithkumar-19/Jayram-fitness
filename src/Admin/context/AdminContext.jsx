@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { addDays } from "date-fns";
+import axios from "axios";
 
 const AdminContext = createContext();
 
@@ -7,68 +7,156 @@ export const useAdmin = () => {
     return useContext(AdminContext);
 };
 
-// Initial Mock Data
-const INITIAL_MEMBERS = [
-    { id: 1, firstName: "John", surname: "Doe", dob: "1990-05-15", gender: "male", email: "john@example.com", address: "123 Main St", occupation: "Engineer", weight: 75, height: 180, disability: "no", healthProblems: [], joinDate: "2023-01-01", duration: "yearly", endDate: "2024-01-01", totalAmount: 12000, paidAmount: 12000, incharge: "Ramesh", status: "active" },
-    { id: 2, firstName: "Jane", surname: "Smith", dob: "1995-08-20", gender: "female", email: "jane@example.com", address: "456 Oak Ave", occupation: "Doctor", weight: 60, height: 165, disability: "no", healthProblems: ["Back Pain"], joinDate: "2023-11-15", duration: "1 month", endDate: "2023-12-15", totalAmount: 1500, paidAmount: 1000, incharge: "Suresh", status: "active" },
-    { id: 3, firstName: "Mike", surname: "Johnson", dob: "1988-12-10", gender: "male", email: "mike@example.com", address: "789 Pine Ln", occupation: "Teacher", weight: 85, height: 175, disability: "yes", disabilityDetail: "Knee Injury", healthProblems: [], joinDate: "2023-06-01", duration: "6 months", endDate: "2023-12-01", totalAmount: 7000, paidAmount: 7000, incharge: "Ramesh", status: "inactive" },
-];
-
-const INITIAL_REVENUE_DATA = [
-    { name: 'Jan', total: 4000 },
-    { name: 'Feb', total: 3000 },
-    { name: 'Mar', total: 2000 },
-    { name: 'Apr', total: 2780 },
-    { name: 'May', total: 1890 },
-    { name: 'Jun', total: 2390 },
-    { name: 'Jul', total: 3490 },
-    { name: 'Aug', total: 4000 },
-    { name: 'Sep', total: 3000 },
-    { name: 'Oct', total: 5000 },
-    { name: 'Nov', total: 4500 },
-    { name: 'Dec', total: 6000 },
-];
-
 export const AdminProvider = ({ children }) => {
-    const [members, setMembers] = useState(INITIAL_MEMBERS);
-    const [incharges, setIncharges] = useState(["Goutham", "Venkat", "Shyam"]);
-    const [revenueData, setRevenueData] = useState(INITIAL_REVENUE_DATA);
+    // Auth State
+    const [admin, setAdmin] = useState(JSON.parse(localStorage.getItem('adminInfo')) || null);
 
-    const addMember = (newMember) => {
-        setMembers(prev => [...prev, { ...newMember, id: prev.length + 1, status: "active" }]);
-        // In a real app, update revenue as well
+    // Data State
+    const [members, setMembers] = useState([]); // This will hold current page's members
+    const [allMembers, setAllMembers] = useState([]); // Or maybe just keep pagination logic in components?
+    // Actually, for "Expiring" we need a different API call. 
+    // Let's keep `members` as the list for the main table.
+
+    const [expiringMembers, setExpiringMembers] = useState([]);
+    const [incharges, setIncharges] = useState(["Goutham", "Venkat", "Shyam"]); // Keep mock for now or add API
+
+    // Stats & Dashboard
+    const [stats, setStats] = useState({
+        totalMembers: 0,
+        activeMembers: 0,
+        totalRevenue: 0,
+        todayRevenue: 0,
+        revenueData: []
+    });
+
+    // Pagination Info
+    const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
+
+    const API_URL = "http://localhost:5000/api";
+
+    // Attach token to requests
+    const config = () => ({
+        headers: {
+            Authorization: `Bearer ${admin?.token}`,
+        },
+    });
+
+    // Login
+    const login = async (email, password) => {
+        try {
+            const { data } = await axios.post(`${API_URL}/auth/login`, { email, password });
+            setAdmin(data);
+            localStorage.setItem('adminInfo', JSON.stringify(data));
+            return { success: true };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.message || error.message };
+        }
     };
 
-    const updateMember = (id, updatedData) => {
-        setMembers(prev => prev.map(m => m.id === id ? { ...m, ...updatedData } : m));
+    const logout = () => {
+        setAdmin(null);
+        localStorage.removeItem('adminInfo');
     };
 
-    const deleteMember = (id) => {
-        setMembers(prev => prev.filter(m => m.id !== id));
+    // Fetch Members (Paginated)
+    const fetchMembers = async (page = 1, search = "") => {
+        try {
+            const { data } = await axios.get(`${API_URL}/members?page=${page}&search=${search}`, config());
+            setMembers(data.members);
+            setPagination({
+                page: data.currentPage,
+                pages: data.totalPages,
+                total: data.totalMembers
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    // Fetch Expiring Members
+    const fetchExpiringMembers = async () => {
+        try {
+            const { data } = await axios.get(`${API_URL}/members/expiring`, config());
+            setExpiringMembers(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    // Fetch Stats
+    const fetchStats = async () => {
+        try {
+            const { data } = await axios.get(`${API_URL}/dashboard/stats`, config());
+            setStats(data); // { totalMembers, activeMembers, totalRevenue, revenueData }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    // Add Member
+    const addMember = async (memberData) => {
+        try {
+            await axios.post(`${API_URL}/members`, memberData, config());
+            // Refresh data
+            fetchMembers(pagination.page);
+            fetchStats();
+        } catch (error) {
+            console.error(error);
+            alert("Error adding member: " + (error.response?.data?.message || error.message));
+        }
+    };
+
+    // Update Member
+    const updateMember = async (id, memberData) => {
+        try {
+            await axios.put(`${API_URL}/members/${id}`, memberData, config());
+            // Refresh data
+            fetchMembers(pagination.page);
+            fetchExpiringMembers(); // In case we renewed
+            fetchStats();
+        } catch (error) {
+            console.error(error);
+            alert("Error updating member");
+        }
+    };
+
+    // Delete Member
+    const deleteMember = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this member?")) return;
+        try {
+            await axios.delete(`${API_URL}/members/${id}`, config());
+            // Refresh data
+            fetchMembers(pagination.page);
+            fetchStats();
+        } catch (error) {
+            console.error(error);
+            alert("Error deleting member");
+        }
     };
 
     const addIncharge = (name) => {
+        // keeping this simple/local for now as requested by user previously, or connect to API if needed
         if (name && !incharges.includes(name)) {
             setIncharges(prev => [...prev, name]);
         }
     };
 
-    const calculateStats = () => {
-        const totalMembers = members.length;
-        const activeMembers = members.filter(m => m.status === 'active').length;
-        // Mocking revenue calc for current month
-        const thisMonthRevenue = 25000;
-        const totalRevenue = members.reduce((sum, m) => sum + (Number(m.paidAmount) || 0), 0);
-
-        return { totalMembers, activeMembers, thisMonthRevenue, totalRevenue };
-    };
-
     return (
         <AdminContext.Provider value={{
+            admin,
+            login,
+            logout,
             members,
+            expiringMembers,
+            pagination,
             incharges,
-            revenueData,
-            stats: calculateStats(),
+            stats, // Contains revenueData etc.
+            revenueData: stats.revenueData || [],
+
+            fetchMembers, // Exposed for Members.jsx to trigger search/page change
+            fetchExpiringMembers,
+            fetchStats,
+
             addMember,
             updateMember,
             deleteMember,

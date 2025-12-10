@@ -1,5 +1,5 @@
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./components/LandingPage";
 import Login from "./Admin/Login";
 import AdminLayout from "./Admin/Layout";
@@ -17,12 +17,16 @@ function App() {
           <Route path="/admin/login" element={<Login />} />
 
           {/* Admin Routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="members" element={<Members />} />
-            <Route path="expiring" element={<Expiring />} />
-          </Route>
+          {localStorage.getItem("adminInfo") ? (
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="members" element={<Members />} />
+              <Route path="expiring" element={<Expiring />} />
+            </Route>
+          ) : (
+            <Route path="/admin" element={<Navigate to="/admin/login" />} />
+          )}
         </Routes>
       </AdminProvider>
     </div>

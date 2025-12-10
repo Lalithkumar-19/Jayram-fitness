@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Lock, Mail, Dumbbell, ArrowRight } from "lucide-react";
 
-// Assuming we might want to navigate after login in the future
-// import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
+import { useAdmin } from "./context/AdminContext";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -11,14 +11,22 @@ const Login = () => {
     });
     const [loading, setLoading] = useState(false);
 
+    const { login } = useAdmin();
+    const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate login
-        setTimeout(() => {
-            setLoading(false);
-            alert("Login functionality not implemented yet.");
-        }, 1000);
+        const res = await login(formData.email, formData.password);
+        setLoading(false);
+
+        if (res.success) {
+            setTimeout(() => {
+                navigate('/admin');
+            }, 3000);
+        } else {
+            alert(res.message);
+        }
     };
 
     return (

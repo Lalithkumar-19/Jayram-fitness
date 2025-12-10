@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, Clock, LogOut, Dumbbell, Menu, X } from 'lucide-react';
 
 const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const location = useLocation();
+    const navigate = useNavigate();
+    const admin = localStorage.getItem('adminInfo');
+    const logout = () => {
+        localStorage.removeItem('adminInfo');
+        navigate('/admin/login');
+    };
+    if (!admin) {
+        navigate('/admin/login');
+    }
 
     const navItems = [
         { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
@@ -16,17 +25,15 @@ const AdminLayout = () => {
         <div className="flex h-screen bg-[#1D1D1D] font-vazirmatn text-white overflow-hidden">
             {/* Sidebar */}
             <aside
-                className={`${isSidebarOpen ? 'w-64' : 'w-20'} fixed inset-y-0 left-0 z-50 flex flex-col bg-black/40 border-r border-white/10 transition-all duration-300 backdrop-blur-xl md:relative`}
+                className={`${isSidebarOpen ? 'w-64' : 'w-0'} fixed inset-y-0 left-0 z-50 flex flex-col bg-black/40 border-r border-white/10 transition-all duration-300 backdrop-blur-xl md:relative overflow-hidden`}
             >
                 {/* Header */}
                 <div className="flex h-16 items-center justify-center border-b border-white/10 font-gagalin tracking-wider">
-                    {isSidebarOpen ? (
+                    {isSidebarOpen && (
                         <div className="flex items-center gap-2 text-xl">
                             <Dumbbell className="h-6 w-6 text-primary" />
                             <span>ADMIN</span>
                         </div>
-                    ) : (
-                        <Dumbbell className="h-6 w-6 text-primary" />
                     )}
                 </div>
 
@@ -39,8 +46,8 @@ const AdminLayout = () => {
                                 key={item.path}
                                 to={item.path}
                                 className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-all ${isActive
-                                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
                                     }`}
                                 title={!isSidebarOpen ? item.label : ''}
                             >
@@ -53,13 +60,13 @@ const AdminLayout = () => {
 
                 {/* Footer */}
                 <div className="border-t border-white/10 p-4">
-                    <Link
-                        to="/admin/login"
+                    <span
+                        onClick={logout}
                         className="flex items-center gap-3 rounded-xl px-4 py-3 text-red-500 transition-colors hover:bg-red-500/10"
                     >
                         <LogOut className="h-5 w-5 shrink-0" />
                         {isSidebarOpen && <span className="font-medium">Logout</span>}
-                    </Link>
+                    </span>
                 </div>
             </aside>
 

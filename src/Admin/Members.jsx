@@ -4,26 +4,30 @@ import { Plus, Search, Filter, MoreVertical, Edit2, Trash2, Eye, ChevronLeft, Ch
 import AdmissionForm from './components/AdmissionForm';
 
 const Members = () => {
-    const { members, updateMember, deleteMember } = useAdmin();
+    const { members, pagination, fetchMembers, updateMember, deleteMember } = useAdmin();
     const [searchTerm, setSearchTerm] = useState("");
     const [showAdmissionForm, setShowAdmissionForm] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null); // For View
     const [editingMember, setEditingMember] = useState(null); // For Edit
 
-    // Pagination State
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 15;
+    // Initial Fetch
+    // Ideally this should happen in context or here on mount
+    React.useEffect(() => {
+        fetchMembers(1, "");
+    }, []);
 
-    const filteredMembers = members.filter(m =>
-        m.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        m.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        m.id.toString().includes(searchTerm)
-    );
+    // Search Handler
+    React.useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            fetchMembers(1, searchTerm);
+        }, 500); // Debounce search
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm]);
 
     // Pagination Logic
-    const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentMembers = filteredMembers.slice(startIndex, startIndex + itemsPerPage);
+    const handlePageChange = (newPage) => {
+        fetchMembers(newPage, searchTerm);
+    };
 
     const toggleStatus = (id, currentStatus) => {
         updateMember(id, { status: currentStatus === 'active' ? 'inactive' : 'active' });
@@ -63,12 +67,12 @@ const Members = () => {
                         type="text"
                         placeholder="Search by name or ID..."
                         value={searchTerm}
-                        onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} // Reset page on search
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:border-primary focus:outline-none"
                     />
                 </div>
                 <div className="text-sm text-gray-400 ml-auto">
-                    Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredMembers.length)} of {filteredMembers.length} members
+                    Showing {members.length > 0 ? (pagination.page - 1) * 15 + 1 : 0}-{Math.min((pagination.page - 1) * 15 + 15, pagination.total)} of {pagination.total} members
                 </div>
             </div>
 
@@ -88,57 +92,60 @@ const Members = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                            {currentMembers.map((member) => (
-                                <tr key={member.id} className="hover:bg-white/5 transition-colors">
-                                    <td className="px-6 py-4 text-gray-300">#{member.id}</td>
-                                    <td className="px-6 py-4">
-                                        <div className="font-medium text-white">{member.firstName} {member.surname}</div>
-                                        <div className="text-xs text-gray-500">{member.email}</div>
-                                    </td>
-                                    <td className="px-6 py-4 text-gray-300">{member.joinDate}</td>
-                                    <td className="px-6 py-4 text-gray-300">{member.endDate}</td>
-                                    <td className="px-6 py-4">
-                                        <span className="bg-white/10 px-2 py-1 rounded text-xs text-secondaryVar2 capitalize">{member.duration}</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button
-                                            onClick={() => toggleStatus(member.id, member.status)}
-                                            className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors hover:opacity-80 ${member.status === 'active'
-                                                ? 'bg-green-500/10 border-green-500 text-green-500'
-                                                : 'bg-red-500/10 border-red-500 text-red-500'
-                                                }`}
-                                        >
-                                            {member.status}
-                                        </button>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-2">
+                            {members.map((member, index) => {
+                                member.id = index + 1;
+                                return (
+                                    <tr key={member._id || member.id} className="hover:bg-white/5 transition-colors">
+                                        <td className="px-6 py-4 text-gray-300">{index + 1}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="font-medium text-white">{member.firstName} {member.surname}</div>
+                                            <div className="text-xs text-gray-500">{member.email}</div>
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-300">{member.joinDate}</td>
+                                        <td className="px-6 py-4 text-gray-300">{member.endDate}</td>
+                                        <td className="px-6 py-4">
+                                            <span className="bg-white/10 px-2 py-1 rounded text-xs text-secondaryVar2 capitalize">{member.duration}</span>
+                                        </td>
+                                        <td className="px-6 py-4">
                                             <button
-                                                title="View Details"
-                                                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                                                onClick={() => setSelectedMember(member)}
+                                                onClick={() => toggleStatus(member._id || member.id, member.status)}
+                                                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors hover:opacity-80 ${member.status === 'active'
+                                                    ? 'bg-green-500/10 border-green-500 text-green-500'
+                                                    : 'bg-red-500/10 border-red-500 text-red-500'
+                                                    }`}
                                             >
-                                                <Eye className="h-4 w-4" />
+                                                {member.status}
                                             </button>
-                                            <button
-                                                title="Edit / Renew"
-                                                className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 rounded-lg transition-colors"
-                                                onClick={() => handleEdit(member)}
-                                            >
-                                                <Edit2 className="h-4 w-4" />
-                                            </button>
-                                            <button
-                                                title="Delete"
-                                                onClick={() => deleteMember(member.id)}
-                                                className="p-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-colors"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                            {currentMembers.length === 0 && (
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                    title="View Details"
+                                                    className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                                    onClick={() => setSelectedMember(member)}
+                                                >
+                                                    <Eye className="h-4 w-4" />
+                                                </button>
+                                                <button
+                                                    title="Edit / Renew"
+                                                    className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 rounded-lg transition-colors"
+                                                    onClick={() => handleEdit(member)}
+                                                >
+                                                    <Edit2 className="h-4 w-4" />
+                                                </button>
+                                                <button
+                                                    title="Delete"
+                                                    onClick={() => deleteMember(member._id || member.id)}
+                                                    className="p-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-colors"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                            {members.length === 0 && (
                                 <tr>
                                     <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
                                         No members found.
@@ -150,21 +157,21 @@ const Members = () => {
                 </div>
 
                 {/* Pagination */}
-                {totalPages > 1 && (
+                {pagination.pages > 1 && (
                     <div className="flex items-center justify-between border-t border-white/10 bg-white/5 px-6 py-4">
                         <button
-                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(Math.max(1, pagination.page - 1))}
+                            disabled={pagination.page === 1}
                             className="flex items-center gap-1 text-sm font-medium text-gray-400 hover:text-white disabled:opacity-50 transition-colors"
                         >
                             <ChevronLeft className="h-4 w-4" /> Previous
                         </button>
                         <span className="text-sm text-gray-400">
-                            Page {currentPage} of {totalPages}
+                            Page {pagination.page} of {pagination.pages}
                         </span>
                         <button
-                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(Math.min(pagination.pages, pagination.page + 1))}
+                            disabled={pagination.page === pagination.pages}
                             className="flex items-center gap-1 text-sm font-medium text-gray-400 hover:text-white disabled:opacity-50 transition-colors"
                         >
                             Next <ChevronRight className="h-4 w-4" />
@@ -215,12 +222,12 @@ const Members = () => {
 
                         <div className="grid gap-6 md:grid-cols-2">
                             <DetailSection title="Personal Information">
-                                <DetailRow label="Date of Birth" value={selectedMember.dob} />
+                                <DetailRow label="Date of Birth" value={selectedMember.dob ? new Date(selectedMember.dob).toLocaleDateString('en-GB').replace(/\//g, '-') : "N/A"} />
                                 <DetailRow label="Gender" value={selectedMember.gender} />
-                                <DetailRow label="Email" value={selectedMember.email} />
-                                <DetailRow label="Phone" value={selectedMember.phone || "N/A"} />
-                                <DetailRow label="Occupation" value={selectedMember.occupation} />
-                                <DetailRow label="Address" value={selectedMember.address} className="col-span-2" />
+                                <DetailRow label="Email" className='col-span-2' value={selectedMember.email} />
+                                <DetailRow label="Phone" className='col-span-2' value={selectedMember.phone || "N/A"} />
+                                <DetailRow label="Occupation" className='col-span-2' value={selectedMember.occupation} />
+                                <DetailRow label="Address" className='col-span-2' value={selectedMember.address} />
                             </DetailSection>
 
                             <DetailSection title="Physical Stats & Health">

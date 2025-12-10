@@ -5,30 +5,28 @@ import AdmissionForm from './components/AdmissionForm';
 import { differenceInDays, parseISO } from 'date-fns';
 
 const Expiring = () => {
-    const { members, updateMember, deleteMember } = useAdmin();
+    const { expiringMembers, fetchExpiringMembers, updateMember, deleteMember } = useAdmin();
     const [searchTerm, setSearchTerm] = useState("");
     const [showAdmissionForm, setShowAdmissionForm] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null); // For View
     const [editingMember, setEditingMember] = useState(null); // For Edit
 
-    // Pagination State
+    // Pagination State (Client-side for expiring members as list is expected to be small usually? Or implement server side too? Controller returns all. Let's do client side pagination on the server response.)
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 15;
 
-    // Filter Expiring Members (<= 5 days) + Search Filter
-    const filteredMembers = members.filter(member => {
-        // First check if expiring soon
-        if (member.status !== 'active' || !member.endDate) return false;
-        const daysLeft = differenceInDays(parseISO(member.endDate), new Date());
-        const isExpiringSoon = daysLeft <= 5 && daysLeft >= 0;
+    // Fetch on Mount
+    React.useEffect(() => {
+        fetchExpiringMembers();
+    }, []);
 
-        if (!isExpiringSoon) return false;
-
-        // Then apply search
+    // Filter Expiring Members (Search Filter only, expiration filtered by API)
+    const filteredMembers = (expiringMembers || []).filter(member => {
         return (
             member.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             member.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            member.id.toString().includes(searchTerm)
+            (member._id && member._id.toString().includes(searchTerm)) || // Handle MongoDB _id
+            (member.id && member.id.toString().includes(searchTerm))
         );
     });
 
@@ -98,8 +96,8 @@ const Expiring = () => {
                             {currentMembers.map((member) => {
                                 const daysLeft = differenceInDays(parseISO(member.endDate), new Date());
                                 return (
-                                    <tr key={member.id} className="hover:bg-white/5 transition-colors">
-                                        <td className="px-6 py-4 text-gray-300">#{member.id}</td>
+                                    <tr key={member._id || member.id} className="hover:bg-white/5 transition-colors">
+                                        <td className="px-6 py-4 text-gray-300">#{member._id ? member._id.slice(-6) : member.id}</td>
                                         <td className="px-6 py-4">
                                             <div className="font-medium text-white">{member.firstName} {member.surname}</div>
                                             <div className="text-xs text-gray-500">{member.email}</div>
@@ -115,7 +113,7 @@ const Expiring = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <button
-                                                onClick={() => toggleStatus(member.id, member.status)}
+                                                onClick={() => toggleStatus(member._id || member.id, member.status)}
                                                 className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors hover:opacity-80 ${member.status === 'active'
                                                     ? 'bg-green-500/10 border-green-500 text-green-500'
                                                     : 'bg-red-500/10 border-red-500 text-red-500'
@@ -142,7 +140,7 @@ const Expiring = () => {
                                                 </button>
                                                 <button
                                                     title="Delete"
-                                                    onClick={() => deleteMember(member.id)}
+                                                    onClick={() => deleteMember(member._id || member.id)}
                                                     className="p-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-colors"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
