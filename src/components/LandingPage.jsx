@@ -12,9 +12,16 @@ import Testimonials from "./Testimonials";
 import Tools from "./Tools";
 import Trainers from "./Trainers";
 
+import { Helmet } from "react-helmet-async";
+
 const LandingPage = () => {
     return (
         <>
+            <Helmet>
+                <title>Home</title>
+                <meta name="description" content="Welcome to JayRam Fitness - The ultimate destination for fitness enthusiasts. Explore our plans, trainers, and facilities." />
+                <link rel="canonical" href="https://www.jayramfitness.fit/" />
+            </Helmet>
             <Header />
             <div id="home">
                 <Hero />

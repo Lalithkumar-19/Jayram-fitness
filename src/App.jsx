@@ -8,9 +8,12 @@ import Members from "./Admin/Members";
 import Expiring from "./Admin/Expiring";
 import { AdminProvider } from "./Admin/context/AdminContext";
 
+import { Helmet } from "react-helmet-async";
+
 function App() {
   return (
     <div className="font-vazirmatn text-white">
+      <Helmet titleTemplate="%s | JayRam Fitness" defaultTitle="JayRam Fitness" />
       <AdminProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} />

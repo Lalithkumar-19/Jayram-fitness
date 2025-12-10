@@ -3,6 +3,7 @@ import { Lock, Mail, Dumbbell, ArrowRight } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "./context/AdminContext";
+import { Helmet } from "react-helmet-async";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -31,6 +32,10 @@ const Login = () => {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#1D1D1D] font-vazirmatn text-white">
+            <Helmet>
+                <title>Admin Login</title>
+                <meta name="robots" content="noindex" />
+            </Helmet>
             {/* Background decorative elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute -left-[10%] -top-[10%] h-[500px] w-[500px] rounded-full bg-primary/20 blur-[120px]" />
