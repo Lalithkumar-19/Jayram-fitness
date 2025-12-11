@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, Clock, LogOut, Dumbbell, Menu, X } from 'lucide-react';
+import { useAdmin } from './context/AdminContext';
 
 const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
-    const admin = localStorage.getItem('adminInfo');
+    const { logout: contextLogout } = useAdmin();
+    
     const logout = () => {
-        localStorage.removeItem('adminInfo');
-        navigate('/admin/login');
+        contextLogout();
+        navigate('/admin/login', { replace: true });
     };
-    if (!admin) {
-        navigate('/admin/login');
-    }
 
     const navItems = [
         { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
@@ -62,7 +61,7 @@ const AdminLayout = () => {
                 <div className="border-t border-white/10 p-4">
                     <span
                         onClick={logout}
-                        className="flex items-center gap-3 rounded-xl px-4 py-3 text-red-500 transition-colors hover:bg-red-500/10"
+                        className="flex items-center gap-3 rounded-xl px-4 py-3 text-red-500 transition-colors hover:bg-red-500/10 cursor-pointer"
                     >
                         <LogOut className="h-5 w-5 shrink-0" />
                         {isSidebarOpen && <span className="font-medium">Logout</span>}

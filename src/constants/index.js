@@ -214,7 +214,7 @@ export const trainers = [
   },
   {
     id: 4,
-    name: "Ganesh Bv",
+    name: "Sampath",
     role: "Pesonal Trainer",
     image: tom,
   },
