@@ -115,50 +115,52 @@ export const services = [service1, service2, service3, service4];
 export const plans = [
   {
     id: 1,
-    package: "Pro Plan",
+    package: "Monthly Strength Training",
     description:
-      "Our Pro Plan offers advanced workouts and personalized nutrition coaching to help you reach your goals faster. Sign Up Right Now!",
+      "Perfect for those focused on building strength. Get full access to our strength equipment with support for all fitness levels.",
     features: [
-      "Access to All Of Our Exercise Videos ",
-      "Progress Tracking",
-      "Supportive Online Community",
-      "Advanced, Personalized Workout Plans",
-      "Comprehensive Nutrition Coaching",
-      "Access to Advanced Workout Programs",
-      "Body Composition Analysis",
+      "Full access to strength equipment",
+      "Beginner to advanced training support",
+      "Structured workout environment",
     ],
-    price: "99",
+    price: "600",
   },
   {
     id: 2,
-    package: "Custom Plan",
+    package: "Strength and Cardio Access",
     description:
-      "Experience a fully tailored fitness experience with our Custom Plan. Work one-on-one with a dedicated trainer to achieve your goals.",
+      "The complete package for overall fitness. Combine strength training with cardio to achieve weight loss and build stamina.",
     features: [
-      "Access to All Of Our Exercise Videos ",
-      "Progress Tracking",
-      "Supportive Online Community",
-      "Fully Customized Workout and Nutrition Plan",
-      "Weekly Check-ins with Your Trainer",
-      "Access to All Platform Features",
-      "Exclusive Gear Discounts",
+      "Strength training and cardio machines",
+      "Treadmill and cycle access",
+      "Suitable for weight loss and stamina",
     ],
-    price: "149",
+    price: "1000",
   },
   {
     id: 3,
-    package: "Begginer Plan",
+    package: "Personal Training",
     description:
-      "Start your fitness journey with our Beginner Plan. Build a strong foundation with basic workouts and essential nutrition guidance.",
+      "Get personalized attention with our expert trainers. Custom plans tailored to your goals with daily monitoring and guidance.",
     features: [
-      "Access to All Of Our Exercise Videos",
-      "Progress Tracking",
-      "Supportive Online Community",
-      "Personalized Workout Plans",
-      "Basic Nutrition Guidance",
-      "Access to Group Fitness Classes",
+      "Custom workout plan",
+      "Daily monitoring",
+      "Form correction and guidance",
+      "Weekly progress tracking",
     ],
-    price: "49",
+    price: "3000",
+  },
+  {
+    id: 4,
+    package: "Admission Fee",
+    description:
+      "One-time admission fee to get started on your fitness journey with us. Includes assessment and onboarding.",
+    features: [
+      "Fitness assessment",
+      "ID creation",
+      "Onboarding",
+    ],
+    price: "100",
   },
 ];
 

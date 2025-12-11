@@ -28,7 +28,7 @@ const Plans = () => {
           <div className="rounded-[40px] bg-primary px-8 py-3">Mounthly</div>
           <p className="px-8">Annauly</p>
         </div> */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-9">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-9">
           {plans.map((plan) => (
             <div
               key={plan.id}
