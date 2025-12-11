@@ -22,7 +22,7 @@ const Login = () => {
         setLoading(false);
 
         if (res.success) {
-            navigate('/admin');
+            navigate('/admin/dashboard', { replace: true });
         } else {
             alert(res.message);
         }
