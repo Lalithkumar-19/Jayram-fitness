@@ -109,7 +109,7 @@ const AdmissionForm = ({ onClose, initialData }) => {
                                 </label>
                             </div>
                         </div>
-                        <Input label="Email" type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required className="md:col-span-1" />
+                        <Input label="Email" type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="md:col-span-1" />
                         <Input label="Mobile Number" type="tel" value={formData.mobile} onChange={e => setFormData({ ...formData, mobile: e.target.value })} required placeholder="10-digit number" />
                         <Input label="Occupation" value={formData.occupation} onChange={e => setFormData({ ...formData, occupation: e.target.value })} />
                         <Input label="Address" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} className="md:col-span-3" />
